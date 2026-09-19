@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ASD Screening Prediction System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #263238;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+
+        header {
+            background: linear-gradient(135deg, #244a73, #3b82a0);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        /* MAIN CONTAINER */
+
+        .container {
+            width: 92%;
+            max-width: 1050px;
+            margin: 30px auto;
+        }
+
+        /* CARD */
+
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            color: #244a73;
+            margin-bottom: 8px;
+            font-size: 22px;
+        }
+
+        .section-description {
+            color: #68757d;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        /* FORM GRID */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 7px;
+            font-size: 14px;
+            color: #37474f;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ccd5dc;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #fff;
+            transition: 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #3b82a0;
+            box-shadow: 0 0 0 3px rgba(59,130,160,0.12);
+        }
+
+        /* SCREENING QUESTIONS */
+
+        .question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 17px 0;
+            border-bottom: 1px solid #e8edf1;
+            gap: 20px;
+        }
+
+        .question:last-child {
+            border-bottom: none;
+        }
+
+        .question-text {
+            flex: 1;
+        }
+
+        .question-number {
+            display: inline-flex;
+            width: 34px;
+            height: 34px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #e8f1f7;
+            color: #244a73;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .question-text span {
+            font-size: 14px;
+        }
+
+        .yes-no {
+            display: flex;
+            gap: 20px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            width: auto;
+            accent-color: #3b82a0;
+        }
+
+        /* BUTTON */
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .predict-btn {
+            border: none;
+            padding: 15px 35px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #244a73, #3b82a0);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(36,74,115,0.25);
+        }
+
+        .reset-btn {
+            border: 1px solid #b8c2ca;
+            padding: 14px 28px;
+            border-radius: 9px;
+            background: white;
+            color: #455a64;
+            font-size: 15px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* RESULT */
+
+        #resultSection {
+            display: none;
+        }
+
+        .result-card {
+            text-align: center;
+            border-left: 6px solid #3b82a0;
+        }
+
+        .result-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .probability {
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        .progress-background {
+            width: 100%;
+            height: 16px;
+            background: #e7edf1;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #3b82a0;
+            transition: width 1s ease;
+        }
+
+        .probability-text {
+            margin-top: 8px;
+            font-weight: bold;
+        }
+
+        .result-message {
+            margin: 15px auto;
+            max-width: 700px;
+            color: #5b6870;
+        }
+
+        /* DISCLAIMER */
+
+        .disclaimer {
+            background: #fff8e6;
+            border: 1px solid #f0d99a;
+            padding: 18px;
+            border-radius: 9px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #6d5a27;
+        }
+
+        /* FOOTER */
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #75818a;
+            font-size: 13px;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            header h1 {
+                font-size: 23px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .question {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .yes-no {
+                justify-content: flex-start;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .reset-btn {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+        /* ==========================================
+   MODEL RELIABILITY SECTION
+   ========================================== */
+
+.reliability-section {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #f7f9fc;
+    border: 1px solid #d9e1ec;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.reliability-section h3 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    text-align: center;
+    font-size: 20px;
+}
+
+.reliability-section p {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px 12px;
+    border-radius: 7px;
+    background: #ffffff;
+}
+
+.reliability-section p strong {
+    font-weight: 600;
+}
+
+.reliability-section small {
+    display: block;
+    margin-top: 16px;
+    line-height: 1.5;
+    text-align: center;
+    color: #666;
+}
+    </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+    <h1>Autism Spectrum Disorder</h1>
+    <p>An Explainable and Uncertainty-Aware Machine Learning Framework for Reliable Autism Spectrum Disorder Screening</p>
+</header>
+
+
+<div class="container">
+
+    <!-- PERSONAL INFORMATION -->
+
+    <div class="card">
+
+        <h2>1. Personal Information</h2>
+
+        <p class="section-description">
+            Please provide the following information for the screening model.
+        </p>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input
+                    type="number"
+                    id="age"
+                    min="18"
+                    max="100"
+                    placeholder="Enter age"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+
+                <select id="gender">
+                    <option value="">Select gender</option>
+                    <option value="m">Male</option>
+                    <option value="f">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ethnicity">Ethnicity</label>
+
+                <select id="ethnicity">
+
+                    <option value="">Select ethnicity</option>
+
+                    <option>White-European</option>
+                    <option>Latino</option>
+                    <option>Others</option>
+                    <option>Black</option>
+                    <option>Asian</option>
+                    <option>Middle Eastern</option>
+                    <option>Pasifika</option>
+                    <option>South Asian</option>
+                    <option>Hispanic</option>
+                    <option>Turkish</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country of Residence</label>
+
+                <select id="country">
+
+                    <option value="">Select country</option>
+
+                    <option>India</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                    <option>Australia</option>
+                    <option>Canada</option>
+                    <option>Brazil</option>
+                    <option>China</option>
+                    <option>Germany</option>
+                    <option>Japan</option>
+                    <option>Other</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="jaundice">
+                    Was jaundice present at birth?
+                </label>
+
+                <select id="jaundice">
+
+                    <option value="">Select option</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="autism-family">
+                    Family history of autism
+                </label>
+
+                <select id="autism-family">
+
+                    <option value="">Select option</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="used-app">
+                    Used screening application before?
+                </label>
+
+                <select id="used-app">
+
+                    <option value="">Select option</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="relation">
+                    Person completing the questionnaire
+                </label>
+
+                <select id="relation">
+
+                    <option value="">Select relationship</option>
+
+                    <option value="Self">Self</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Health care professional">
+                        Health care professional
+                    </option>
+                    <option value="Relative">Relative</option>
+                    <option value="Others">Others</option>
+
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SCREENING QUESTIONS -->
+
+    <div class="card">
+
+        <h2>2. ASD Screening Questions</h2>
+
+        <p class="section-description">
+            Please answer each question based on the individual's
+            usual behavior.
+        </p>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">1</span>
+                <span>
+                    Does the person find it difficult to notice small
+                    sounds when there are distractions?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A1" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A1" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">2</span>
+                <span>
+                    Does the person usually concentrate on the whole
+                    picture rather than small details?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A2" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A2" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">3</span>
+                <span>
+                    Does the person find it easy to do more than one
+                    thing at once?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A3" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A3" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">4</span>
+                <span>
+                    If there is an interruption, can the person return
+                    to what they were doing quickly?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A4" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A4" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">5</span>
+                <span>
+                    Does the person find it easy to understand when
+                    someone is speaking indirectly?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A5" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A5" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">6</span>
+                <span>
+                    Does the person know when someone listening to them
+                    is getting bored?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A6" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A6" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">7</span>
+                <span>
+                    When reading a story, does the person find it
+                    difficult to work out the characters' intentions?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A7" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A7" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">8</span>
+                <span>
+                    When looking at a person's face, does the person
+                    easily understand their emotions?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A8" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A8" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">9</span>
+                <span>
+                    Does the person find it difficult to work out
+                    people's intentions?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A9" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A9" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="question">
+
+            <div class="question-text">
+                <span class="question-number">10</span>
+                <span>
+                    Does the person have difficulty understanding
+                    sarcasm or humor?
+                </span>
+            </div>
+
+            <div class="yes-no">
+
+                <label class="radio-option">
+                    <input type="radio" name="A10" value="Yes">
+                    Yes
+                </label>
+
+                <label class="radio-option">
+                    <input type="radio" name="A10" value="No">
+                    No
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- BUTTONS -->
+
+        <div class="button-container">
+
+            <button
+                type="button"
+                class="predict-btn"
+                onclick="predictASD()">
+
+                Predict ASD Screening Result
+
+            </button>
+
+            <button
+                type="button"
+                class="reset-btn"
+                onclick="resetForm()">
+
+                Reset
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT -->
+
+    <div class="card result-card" id="resultSection">
+
+        <div class="result-icon" id="resultIcon">
+            🔎
+        </div>
+
+        <div
+            class="result-title"
+            id="resultTitle">
+
+            Prediction Result
+
+        </div>
+
+        <div class="probability">
+
+            <div class="progress-background">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar">
+                </div>
+
+            </div>
+
+            <div
+                class="probability-text"
+                id="probabilityText">
+
+                Probability: 0%
+
+            </div>
+
+        </div>
+
+        <p
+            class="result-message"
+            id="resultMessage">
+        </p>
+        <div
+    id="reliabilitySection"
+    class="reliability-section"
+    style="display: none;"
+>
+</div>
+        <div id="explanationSection" style="margin-top: 25px; display: none;">
+
+    <h3 style="color: #244a73; margin-bottom: 12px;">
+        Explainable AI – Important Contributing Features
+    </h3>
+
+    <p style="font-size: 14px; color: #68757d; margin-bottom: 15px;">
+        The following features had the strongest influence on this
+        individual prediction according to the SHAP explanation.
+    </p>
+
+    <div id="explanationList"></div>
+
+</div>
+
+        <div class="disclaimer">
+
+            <strong>Important:</strong>
+
+            This application is an academic/research prototype
+            for ASD screening prediction using machine learning.
+            It is not a medical diagnostic tool and should not be
+            used as a substitute for assessment by a qualified
+            healthcare professional.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    M.Tech Data Science Project |
+    An Explainable and Uncertainty-Aware Machine Learning Framework for Reliable Autism Spectrum Disorder Screening
+
+</footer>
+
+
+
+
+
+<script>
+
+function getAnswer(questionName) {
+
+    const selected = document.querySelector(
+        `input[name="${questionName}"]:checked`
+    );
+
+    return selected ? selected.value : null;
+}
+
+
+function formatFeatureName(feature) {
+
+    return feature
+        .replace("num__", "")
+        .replace("cat__", "")
+        .replaceAll("_", " ");
+}
+
+
+async function predictASD() {
+
+    // ----------------------------------
+    // GET PERSONAL INFORMATION
+    // ----------------------------------
+
+    const age = document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+    const ethnicity = document.getElementById("ethnicity").value;
+    const country = document.getElementById("country").value;
+    const jaundice = document.getElementById("jaundice").value;
+    const autismFamily = document.getElementById("autism-family").value;
+    const usedApp = document.getElementById("used-app").value;
+    const relation = document.getElementById("relation").value;
+
+
+    // ----------------------------------
+    // VALIDATE PERSONAL INFORMATION
+    // ----------------------------------
+
+    if (
+        !age ||
+        !gender ||
+        !ethnicity ||
+        !country ||
+        !jaundice ||
+        !autismFamily ||
+        !usedApp ||
+        !relation
+    ) {
+
+        alert("Please complete all personal information fields.");
+        return;
+    }
+
+
+    // ----------------------------------
+    // COLLECT A1-A10
+    // ----------------------------------
+
+    const scores = [];
+
+const scoring = {
+    A1: { Yes: 1, No: 0 },
+    A2: { Yes: 0, No: 1 },
+    A3: { Yes: 0, No: 1 },
+    A4: { Yes: 0, No: 1 },
+    A5: { Yes: 0, No: 1 },
+    A6: { Yes: 0, No: 1 },
+    A7: { Yes: 1, No: 0 },
+    A8: { Yes: 0, No: 1 },
+    A9: { Yes: 1, No: 0 },
+    A10: { Yes: 1, No: 0 }
+};
+
+for (let i = 1; i <= 10; i++) {
+
+    const question = "A" + i;
+    const selected = document.querySelector(
+        `input[name="${question}"]:checked`
+    );
+
+    if (!selected) {
+        alert("Please answer Question " + i);
+        return;
+    }
+
+    const answer = selected.value;
+
+    const score = scoring[question][answer];
+
+    scores.push(score);
+}
+
+
+    // ----------------------------------
+    // CREATE REQUEST DATA
+    // ----------------------------------
+
+    const data = {
+
+        age: parseFloat(age),
+
+        gender: gender,
+
+        ethnicity: ethnicity,
+
+        country: country,
+
+        jaundice: jaundice,
+
+        autism_family: autismFamily,
+
+        used_app: usedApp,
+
+        relation: relation,
+
+        A1_Score: scores[0],
+        A2_Score: scores[1],
+        A3_Score: scores[2],
+        A4_Score: scores[3],
+        A5_Score: scores[4],
+        A6_Score: scores[5],
+        A7_Score: scores[6],
+        A8_Score: scores[7],
+        A9_Score: scores[8],
+        A10_Score: scores[9]
+    };
+
+
+    console.log("Sending prediction data:", data);
+
+
+    // ----------------------------------
+    // SEND DATA TO FLASK
+    // ----------------------------------
+
+    try {
+
+        const response = await fetch(
+            "/predict",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+
+        const result = await response.json();
+
+        console.log("Flask response:", result);
+
+
+        // ----------------------------------
+        // CHECK SERVER ERROR
+        // ----------------------------------
+
+        if (!response.ok || result.error) {
+
+            alert(
+                "Prediction error: " +
+                (result.error || "Unable to get prediction.")
+            );
+
+            return;
+        }
+
+
+        // ----------------------------------
+        // GET RESULT ELEMENTS
+        // ----------------------------------
+
+        const resultSection =
+            document.getElementById("resultSection");
+
+        const resultIcon =
+            document.getElementById("resultIcon");
+
+        const resultTitle =
+            document.getElementById("resultTitle");
+
+        const progressBar =
+            document.getElementById("progressBar");
+
+        const probabilityText =
+            document.getElementById("probabilityText");
+
+        const resultMessage =
+            document.getElementById("resultMessage");
+
+
+        // ----------------------------------
+        // SHOW RESULT
+        // ----------------------------------
+
+        resultSection.style.display = "block";
+
+
+        // ----------------------------------
+        // DISPLAY PROBABILITY
+        // ----------------------------------
+
+        const probability =
+            Number(result.probability);
+
+        probabilityText.textContent =
+            "ASD Screening Probability: " +
+            probability +
+            "%";
+
+        progressBar.style.width =
+            probability + "%";
+            // ----------------------------------
+    // DISPLAY MODEL RELIABILITY
+    // ----------------------------------
+
+    const reliability = result.model_reliability;
+
+    const reliabilityHTML = `
+    <div class="reliability-section">
+
+        <h3>Model Reliability Information</h3>
+
+        <p>
+            <strong>Test Accuracy:</strong>
+            ${reliability.test_accuracy}%
+        </p>
+
+        <p>
+            <strong>ROC-AUC:</strong>
+            ${reliability.roc_auc}
+        </p>
+
+        <p>
+            <strong>Mean Model Agreement:</strong>
+            ${reliability.mean_model_agreement}%
+        </p>
+
+        <p>
+            <strong>Explanation Top-10 Stability:</strong>
+            ${reliability.explanation_top10_stability}%
+        </p>
+
+        <p>
+            <strong>Mean Response Sensitivity:</strong>
+            ${reliability.mean_response_probability_change}
+            percentage points
+        </p>
+
+        <small>
+            These values describe model evaluation on the research dataset.
+            They do not represent individual medical certainty or diagnosis.
+        </small>
+
+    </div>
+`;
+
+        // ----------------------------------
+        // DISPLAY SCREENING SCORE
+        // ----------------------------------
+
+        let scoreText =
+            document.getElementById("scoreText");
+
+        if (!scoreText) {
+
+            scoreText =
+                document.createElement("p");
+
+            scoreText.id = "scoreText";
+
+            scoreText.style.marginTop = "10px";
+
+            scoreText.style.fontWeight = "bold";
+
+            scoreText.style.color = "#455a64";
+
+            probabilityText
+                .parentNode
+                .appendChild(scoreText);
+        }
+
+
+        scoreText.textContent =
+            "Screening Score: " +
+            result.total_score +
+            " / 10";
+
+
+        // ----------------------------------
+        // DISPLAY PREDICTION
+        // ----------------------------------
+
+        if (result.prediction === "ASD") {
+
+            resultIcon.textContent = "⚠️";
+
+            resultTitle.textContent =
+                "ASD Screening: Positive";
+
+            resultMessage.textContent =
+                "The machine learning model indicates a higher likelihood of ASD based on the information provided. This result is intended only for screening support and should not be considered a medical diagnosis.";
+
+        } else {
+
+            resultIcon.textContent = "✓";
+
+            resultTitle.textContent =
+                "ASD Screening: Negative";
+
+            resultMessage.textContent =
+                "The machine learning model indicates a lower likelihood of ASD based on the information provided. A negative screening result does not by itself rule out ASD.";
+        }
+    // ----------------------------------
+// DISPLAY MODEL RELIABILITY
+// ----------------------------------
+
+const reliabilitySection =
+    document.getElementById(
+        "reliabilitySection"
+    );
+
+
+if (
+    reliabilitySection &&
+    result.model_reliability
+) {
+
+    reliabilitySection.innerHTML = `
+
+        <h3>Model Reliability Information</h3>
+
+        <p>
+            <strong>Test Accuracy:</strong>
+            ${Number(
+                result.model_reliability.test_accuracy
+            ).toFixed(2)}%
+        </p>
+
+        <p>
+            <strong>ROC-AUC:</strong>
+            ${Number(
+                result.model_reliability.roc_auc
+            ).toFixed(2)}
+        </p>
+
+        <p>
+            <strong>Mean Model Agreement:</strong>
+            ${Number(
+                result.model_reliability.mean_model_agreement
+            ).toFixed(2)}%
+        </p>
+
+        <p>
+            <strong>Explanation Top-10 Stability:</strong>
+            ${Number(
+                result.model_reliability.explanation_top10_stability
+            ).toFixed(2)}%
+        </p>
+
+        <p>
+            <strong>Mean Response Sensitivity:</strong>
+            ${Number(
+                result.model_reliability.mean_response_probability_change
+            ).toFixed(2)}
+            percentage points
+        </p>
+
+        <small>
+            These values describe model evaluation on the research dataset.
+            They do not represent individual medical certainty or diagnosis.
+        </small>
+
+    `;
+
+    reliabilitySection.style.display = "block";
+}
+
+
+        // ----------------------------------
+        // DISPLAY SHAP EXPLANATION
+        // ----------------------------------
+
+        const explanationSection =
+            document.getElementById(
+                "explanationSection"
+            );
+
+        const explanationList =
+            document.getElementById(
+                "explanationList"
+            );
+
+
+        explanationList.innerHTML = "";
+
+
+        if (
+            result.explanation &&
+            result.explanation.length > 0
+        ) {
+
+            explanationSection.style.display = "block";
+
+
+            result.explanation.forEach(item => {
+
+                const row =
+                    document.createElement("div");
+
+                row.style.display = "flex";
+
+                row.style.justifyContent =
+                    "space-between";
+
+                row.style.alignItems =
+                    "center";
+
+                row.style.padding =
+                    "10px 12px";
+
+                row.style.marginBottom =
+                    "8px";
+
+                row.style.borderRadius =
+                    "7px";
+
+                row.style.background =
+                    "#f4f7fb";
+
+
+                const feature =
+                    document.createElement("span");
+
+                feature.textContent =
+                    formatFeatureName(
+                        item.feature
+                    );
+
+                feature.style.fontWeight =
+                    "bold";
+
+
+                const value =
+                    document.createElement("span");
+
+                const shapValue =
+                    Number(item.shap_value);
+
+
+                if (shapValue > 0) {
+
+                    value.textContent =
+                        "↑ " +
+                        shapValue.toFixed(3);
+
+                    value.style.color =
+                        "#c62828";
+
+                } else {
+
+                    value.textContent =
+                        "↓ " +
+                        Math.abs(shapValue).toFixed(3);
+
+                    value.style.color =
+                        "#2e7d32";
+                }
+
+
+                value.style.fontWeight = "bold";
+
+
+                row.appendChild(feature);
+
+                row.appendChild(value);
+
+                explanationList.appendChild(row);
+
+            });
+
+        } else {
+
+            explanationSection.style.display = "none";
+        }
+
+
+        // ----------------------------------
+        // SCROLL TO RESULT
+        // ----------------------------------
+
+        resultSection.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    }
+
+
+    // ----------------------------------
+    // HANDLE ERROR
+    // ----------------------------------
+
+    catch (error) {
+
+        console.error(
+            "Prediction error:",
+            error
+        );
+
+        alert(
+            "Unable to connect to the Flask prediction server. " +
+            "Please make sure Flask is running."
+        );
+    }
+}
+
+
+// ----------------------------------
+// RESET FORM
+// ----------------------------------
+
+function resetForm() {
+
+    document
+        .querySelectorAll("input[type='radio']")
+        .forEach(
+            radio => radio.checked = false
+        );
+
+
+    document
+        .querySelectorAll("input[type='number']")
+        .forEach(
+            input => input.value = ""
+        );
+
+
+    document
+        .querySelectorAll("select")
+        .forEach(
+            select => select.selectedIndex = 0
+        );
+
+
+    document.getElementById(
+        "resultSection"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "progressBar"
+    ).style.width = "0%";
+
+
+    document.getElementById(
+        "probabilityText"
+    ).textContent =
+        "Probability: 0%";
+
+
+    document.getElementById(
+        "resultTitle"
+    ).textContent =
+        "Prediction Result";
+
+
+    document.getElementById(
+        "resultIcon"
+    ).textContent =
+        "🔎";
+
+
+    document.getElementById(
+        "resultMessage"
+    ).textContent = "";
+
+
+    document.getElementById(
+        "explanationSection"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "explanationList"
+    ).innerHTML = "";
+
+
+    const scoreText =
+        document.getElementById("scoreText");
+
+    if (scoreText) {
+        scoreText.remove();
+    }
+}
+
+</script>
+
+
+</body>
+</html>
+

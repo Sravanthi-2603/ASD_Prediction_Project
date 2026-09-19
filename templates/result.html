@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASD Screening Result</title>
+
+```
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 700px;
+        margin: 50px auto;
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    .result-box {
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+    }
+
+    .positive {
+        background: #ffe5e5;
+        color: #b00020;
+    }
+
+    .negative {
+        background: #e7f7ed;
+        color: #137333;
+    }
+
+    .result-box h2 {
+        margin-top: 0;
+    }
+
+    .details {
+        text-align: left;
+        margin-top: 25px;
+    }
+
+    .details p {
+        font-size: 18px;
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .progress-container {
+        width: 100%;
+        background: #ddd;
+        border-radius: 10px;
+        height: 20px;
+        margin-top: 10px;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+    height: 20px;
+    border-radius: 10px;
+    background: #4a90e2;
+    width: 0%;
+}
+
+    .button {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 25px;
+        background: #4a90e2;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+    }
+
+    .button:hover {
+        background: #357abd;
+    }
+
+    .disclaimer {
+        margin-top: 30px;
+        font-size: 13px;
+        color: #666;
+        line-height: 1.5;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<h1>ASD Screening Result</h1>
+
+{% if prediction|string|trim|upper == "ASD" or prediction|string|trim|upper == "YES" %}
+    <div class="result-box positive">
+        <h2>ASD Screening: Positive</h2>
+        <p>The screening model indicates a higher likelihood of ASD.</p>
+    </div>
+{% else %}
+    <div class="result-box negative">
+        <h2>ASD Screening: Negative</h2>
+        <p>The screening model indicates a lower likelihood of ASD.</p>
+    </div>
+{% endif %}
+
+<div class="details">
+
+    <p>
+        <strong>ASD Screening Probability:</strong>
+        {{ "%.2f"|format(asd_probability) }}%
+    </p>
+
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+     <p>
+         <strong>Screening Score:</strong>
+            {{ screening_score }} / 10
+    </p>
+
+</div>
+
+<div class="reliability-section">
+
+    <h3>Model Reliability Information</h3>
+
+    <p>
+        <strong>Test Accuracy:</strong>
+        99.29%
+    </p>
+
+    <p>
+        <strong>ROC-AUC:</strong>
+        1.00
+    </p>
+
+    <p>
+        <strong>Mean Model Agreement:</strong>
+        95.18%
+    </p>
+
+    <p>
+        <strong>Explanation Top-10 Stability:</strong>
+        100%
+    </p>
+
+    <p>
+        <strong>Mean Response Sensitivity:</strong>
+        11.61 percentage points
+    </p>
+
+    <small>
+        These values describe model evaluation on the research dataset.
+        They do not represent individual medical certainty or diagnosis.
+    </small>
+
+</div>
+
+
+<a href="/" class="button">Take Another Screening</a>
+
+<div class="disclaimer">
+    <strong>Disclaimer:</strong>
+    This system is intended for screening and educational/research purposes only.
+    It is not a medical diagnosis and should not replace assessment by a qualified
+    healthcare professional.
+</div>

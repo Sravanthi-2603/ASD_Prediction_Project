@@ -1,0 +1,100 @@
+Feature,Mean_Absolute_SHAP
+A9_Score,1.6361905
+A6_Score,1.2351526
+A4_Score,1.1505965
+A7_Score,1.108975
+A3_Score,1.0765467
+A5_Score,1.0626707
+A2_Score,0.9638097
+A10_Score,0.8959742
+A8_Score,0.784506
+A1_Score,0.6555934
+age,0.18448481
+ethnicity_White-European,0.14660785
+contry_of_res_United States,0.13104345
+relation_Self,0.052842498
+gender_f,0.0432003
+contry_of_res_New Zealand,0.032583322
+austim_no,0.028110465
+ethnicity_Asian,0.024859585
+gender_m,0.01746739
+ethnicity_Middle Eastern,0.01123063
+jundice_no,0.0067521883
+ethnicity_Others,0.006666279
+jundice_yes,0.005283119
+ethnicity_Black,0.0052785976
+austim_yes,0.0047451425
+ethnicity_?,0.003356305
+ethnicity_Latino,0.0032438796
+contry_of_res_United Kingdom,0.002715814
+relation_Parent,0.0018024417
+contry_of_res_Afghanistan,0.0
+ethnicity_Pasifika,0.0
+ethnicity_others,0.0
+ethnicity_Hispanic,0.0
+ethnicity_Turkish,0.0
+ethnicity_South Asian,0.0
+contry_of_res_Aruba,0.0
+contry_of_res_Armenia,0.0
+contry_of_res_Argentina,0.0
+contry_of_res_Angola,0.0
+contry_of_res_AmericanSamoa,0.0
+contry_of_res_Australia,0.0
+contry_of_res_Azerbaijan,0.0
+contry_of_res_Austria,0.0
+contry_of_res_Burundi,0.0
+contry_of_res_Canada,0.0
+contry_of_res_Chile,0.0
+contry_of_res_Bahamas,0.0
+contry_of_res_Bangladesh,0.0
+contry_of_res_Belgium,0.0
+contry_of_res_Bolivia,0.0
+contry_of_res_Brazil,0.0
+contry_of_res_Egypt,0.0
+contry_of_res_Ethiopia,0.0
+contry_of_res_Finland,0.0
+contry_of_res_France,0.0
+contry_of_res_Germany,0.0
+contry_of_res_Hong Kong,0.0
+contry_of_res_Iceland,0.0
+contry_of_res_India,0.0
+contry_of_res_Indonesia,0.0
+contry_of_res_Iran,0.0
+contry_of_res_Iraq,0.0
+contry_of_res_China,0.0
+contry_of_res_Costa Rica,0.0
+contry_of_res_Cyprus,0.0
+contry_of_res_Czech Republic,0.0
+contry_of_res_Ecuador,0.0
+contry_of_res_Kazakhstan,0.0
+contry_of_res_Jordan,0.0
+contry_of_res_Japan,0.0
+contry_of_res_Italy,0.0
+contry_of_res_Ireland,0.0
+contry_of_res_Malaysia,0.0
+contry_of_res_Mexico,0.0
+contry_of_res_Netherlands,0.0
+contry_of_res_Romania,0.0
+contry_of_res_Russia,0.0
+contry_of_res_Saudi Arabia,0.0
+contry_of_res_Serbia,0.0
+contry_of_res_Nicaragua,0.0
+contry_of_res_Pakistan,0.0
+contry_of_res_Philippines,0.0
+contry_of_res_Portugal,0.0
+contry_of_res_Sri Lanka,0.0
+contry_of_res_Spain,0.0
+contry_of_res_South Africa,0.0
+contry_of_res_Sierra Leone,0.0
+contry_of_res_United Arab Emirates,0.0
+contry_of_res_Turkey,0.0
+contry_of_res_Sweden,0.0
+contry_of_res_Tonga,0.0
+contry_of_res_Viet Nam,0.0
+contry_of_res_Uruguay,0.0
+used_app_before_no,0.0
+used_app_before_yes,0.0
+relation_Health care professional,0.0
+relation_?,0.0
+relation_Others,0.0
+relation_Relative,0.0
